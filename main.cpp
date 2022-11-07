@@ -4,76 +4,35 @@
 #include "CQhead.h"
 
 int main() {
-    // creating an object
-    CQSimulation simulate;
 
-    /*
-    *     implementation without using an object
-    *     (uncomment/comment this if you want to use/unused without object).
-    */
+    if(input_file.is_open()) {
+        string data;
+        string temp;
+        int i = 0;
+        int j = 0;
+        while(getline(input_file, data)) {
+            stringstream val(data);
+            while(val.good() && j < 3) {
+                getline(val, temp, ' ');
+                arr[i][j] = temp;
+                j++;
+            }
+            i++;
+            j = 0;
+        }
+    }
+    input_file.close();
 
-    CQSimulation("lineup","John","regular");
-    CQSimulation("lineup","Bob","regular");
-    CQSimulation("lineup","Tom","regular");
-    CQSimulation("lineup","Sarah","VIP");
-    CQSimulation("lineup","Marie","VIP");
-    CQSimulation("lineup","Joan","VIP");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("arrive","supervisor");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("lineup","Bea","VIP");
-    CQSimulation("lineup","Hank","regular");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("leave","supervisor");
-    CQSimulation("lineup","Art","regular");
-    CQSimulation("lineup","Daisy","VIP");
-    CQSimulation("lineup","Marius","regular");
-    CQSimulation("lineup","Dane","VIP");
-    CQSimulation("serve");
-    CQSimulation("arrive","supervisor");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("serve");
-    CQSimulation("leave","supervisor");
-
-    /*
-     *  implementation using object (simulate).
-     *  (uncomment/comment this if you want to use/unuse with object instead).
-     */
-
-//    simulate.lineup("lineup","John","regular");
-//    simulate.lineup("lineup","Bob","regular");
-//    simulate.lineup("lineup","Tom","regular");
-//    simulate.lineup("lineup","Sarah","VIP");
-//    simulate.lineup("lineup","Marie","VIP");
-//    simulate.lineup("lineup","Joan","VIP");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.supervisor_status("arrive","supervisor");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.lineup("lineup","Bea","VIP");
-//    simulate.lineup("lineup","Hank","regular");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.supervisor_status("leave","supervisor");
-//    simulate.lineup("lineup","Art","regular");
-//    simulate.lineup("lineup","Daisy","VIP");
-//    simulate.lineup("lineup","Marius","regular");
-//    simulate.lineup("lineup","Dane","VIP");
-//    simulate.serve("serve");
-//    simulate.supervisor_status("arrive","supervisor");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.serve("serve");
-//    simulate.supervisor_status("leave","supervisor");
+    for (int i = 0; i < 35; ++i) {
+        string str = arr[i][0];
+        if(str == "lineup") {
+            CQSimulation(arr[i][0],arr[i][1],arr[i][2]);
+        } else if(str == "arrive" || str == "leave") {
+            CQSimulation(arr[i][0],arr[i][1]);
+        } else if(str == "serve") {
+            CQSimulation("serve");
+        }
+    }
 
     return 0;
 

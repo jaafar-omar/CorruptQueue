@@ -6,16 +6,30 @@
 #define CORRUPTQUEUE_CQHEAD_H
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
+#define TEXT_INPUT "C:\\Users\\Jfr\\OneDrive - fwh5t\\Documents\\GitHub\\CorruptQueue\\Docs\\testfile2.txt"
+#define SAMPLE_INPUT "C:\\Users\\Jfr\\OneDrive - fwh5t\\Documents\\GitHub\\CorruptQueue\\Docs\\CQoffice_SampleInput1.txt"
 using namespace std;
 
-//  Structure Node for storing the name of the client and the pointer next
+///    Sample input
+
+// fstream input_file(SAMPLE_INPUT, ios::in);
+
+///     Text input
+fstream input_file(TEXT_INPUT, ios::in);
+
+///     array to store the data in textfile
+string arr[35][3];
+
+///  Structure Node for storing the name of the client and the pointer next
 struct Node {
     string data;
     Node* nxt = nullptr;
     Node() = default;
 };
 
-//  Base class, only svStat attribute for status of supervisor
+///  Base class, only svStat attribute for status of supervisor
 class CorruptQueue {
 
 protected:
@@ -46,7 +60,7 @@ public:
     }
 };
 
-/*
+/**
 *  RegularQueue subclass
 */
 
@@ -61,26 +75,26 @@ public:
 
     //  insert queue method for enqueueing client in lineup
     virtual void insertQueue(const string &reg_client_name) {
-        Node* insertNode = new Node;                            //  Creating new pointer for every client to be inserted.
-        insertNode->data = reg_client_name;                         //  put the client name into the data attribute of pointer.
-        if(back == nullptr) {                                   //  if back is empty (meaning if the queue is empty)
-            front = insertNode;                                 //  the new client is the front and back
+        Node* insertNode = new Node;                            ///  Creating new pointer for every client to be inserted.
+        insertNode->data = reg_client_name;                     ///  put the client name into the data attribute of pointer.
+        if(back == nullptr) {                                   ///  if back is empty (meaning if the queue is empty)
+            front = insertNode;                                 ///  the new client is the front and back
             back = insertNode;
         } else {
-            back->nxt = insertNode;                             //  else if queue is not empty, the former back 'next' pointer is pointer to
-            back = insertNode;                                  //  client and the new client will be the new back
+            back->nxt = insertNode;                             ///  else if queue is not empty, the former back 'next' pointer is pointer to
+            back = insertNode;                                  ///  client and the new client will be the new back
         }
     }
 
-    virtual void popQueue() {                                   //  Deleting the front queue
-        if(front == nullptr) {                                  //  if front pointer is pointing nothing...
-            cout << "Nothing to pop" << endl;                   //  the queue is empty
+    virtual void popQueue() {                                   ///  Deleting the front queue
+        if(front == nullptr) {                                  ///  if front pointer is pointing nothing...
+            cout << "Nothing to pop" << endl;                   ///  the queue is empty
         } else {
-            Node* popNode = front;                              //  create a temporary pointer to store the front data
-            front = front->nxt;                                 //  then the new front will be the next data
+            Node* popNode = front;                              ///  create a temporary pointer to store the front data
+            front = front->nxt;                                 ///  then the new front will be the next data
 
-            if(front == nullptr) {                              //  if next pointer is pointing nothing, then
-                back = nullptr;                                 //  out queue is empty.
+            if(front == nullptr) {                              ///  if next pointer is pointing nothing, then
+                back = nullptr;                                 ///  out queue is empty.
             }
 
             delete popNode;
@@ -94,6 +108,14 @@ public:
     virtual void backQueue() const {
         cout << back->data;
     }
+
+    bool QueueIsEmpty()  {
+        if(front == nullptr) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
 
 /*
@@ -103,30 +125,30 @@ public:
 class VIPStack : public CorruptQueue {
 
 public:
-    Node *top;                                                   // Pointer top.
+    Node *top;                                                   /// Pointer top.
     VIPStack() : top(nullptr) {}
 
     virtual void pushStack(const string &vip_client_name) {
-        Node* pushNode = new Node;                              //  create new pointer for new vip client.
+        Node* pushNode = new Node;                              ///  create new pointer for new vip client.
         pushNode->data = vip_client_name;
         pushNode->nxt = nullptr;
-        if(top != nullptr) {                                    //  if the top is not empty...
-            pushNode->nxt = top;                                //  the new pointer 'next' will point to the former top and
-            top = pushNode;                                     //  the new pointer will be the new top
+        if(top != nullptr) {                                    ///  if the top is not empty...
+            pushNode->nxt = top;                                ///  the new pointer 'next' will point to the former top and
+            top = pushNode;                                     ///  the new pointer will be the new top
         } else {
-            top = pushNode;                                     //  else (if stack is empty) the new pointer will be the top data
-            pushNode->nxt = nullptr;                            //  the next pointer will point to nothing.
+            top = pushNode;                                     ///  else (if stack is empty) the new pointer will be the top data
+            pushNode->nxt = nullptr;                            ///  the next pointer will point to nothing.
         }
     }
 
     virtual void popStack() {
-        Node* popStackNode;                                     //  create a temporary pointer
+        Node* popStackNode;                                     ///  create a temporary pointer
         if(top == nullptr) {
             cout << "Stack is empty" << endl;
         } else {
-            popStackNode = top;                                 //  is stack is not empty, store temporarily the top to the
-            top = top->nxt;                                     //  then the top 'next' will be the new top
-            delete popStackNode;                                //  delete the created temporary pointer
+            popStackNode = top;                                 ///  is stack is not empty, store temporarily the top to the
+            top = top->nxt;                                     ///  then the top 'next' will be the new top
+            delete popStackNode;                                ///  delete the created temporary pointer
         }
     }
 
@@ -179,8 +201,8 @@ class CQSimulation {
      *      without using object
      */
 
-    CQSimulation(const string &string1, const string &string2, const string &string3) {                      // line up method
-        if(sup_stat.isArrive()) {                                                                            // if the supervisor is arrived then...
+    CQSimulation(const string &string1, const string &string2, const string &string3) {                      /// line up method
+        if(sup_stat.isArrive()) {                                                                            /// if the supervisor is arrived then...
             if(string3 == "regular") {
                 regular_client.insertQueue(string2);
                 cout << "Regular client " << string2 << " lines up at RegularQueue" << endl;
@@ -188,7 +210,7 @@ class CQSimulation {
                 regular_client.insertQueue(string2);
                 cout << "VIP client " << string2 << " lines up at RegularQueue" << endl;
             }
-        } else {                                                                                             // if supervisor is not around then...
+        } else {                                                                                             /// if supervisor is not around then...
             if(string3 == "regular") {
                 regular_client.insertQueue(string2);
                 cout << "Regular client " << string2 << " lines up at RegularQueue" << endl;
@@ -199,7 +221,7 @@ class CQSimulation {
         }
     }
 
-    CQSimulation(const string &string1, const string &string2) {                                                     // arrived or leave method
+    CQSimulation(const string &string1, const string &string2) {                                                     /// arrived or leave method
         sup_stat.change_stat(string1);
         if(sup_stat.isArrive()) {
             while(!vip_client.isEmpty()) {
@@ -211,12 +233,16 @@ class CQSimulation {
         }
     }
 
-    explicit CQSimulation(const string &string1) {                                                              //  Serving method
+    explicit CQSimulation(const string &string1) {                                                              ///  Serving method
         if(sup_stat.isArrive()) {
-            cout << "Now serving ";
-            regular_client.frontQueue();
-            cout << " from RegularQueue" << endl;
-            regular_client.popQueue();
+            if(!regular_client.QueueIsEmpty()) {
+                cout << "Now serving ";
+                regular_client.frontQueue();
+                cout << " from RegularQueue" << endl;
+                regular_client.popQueue();
+            } else {
+                cout << "RegularQueue empty" << endl;
+            }
         } else {
             if(!vip_client.isEmpty()) {
                 cout << "Now serving ";
@@ -224,10 +250,14 @@ class CQSimulation {
                 cout << " from VIPStack" << endl;
                 vip_client.popStack();
             } else {
-                cout << "Now serving ";
-                regular_client.frontQueue();
-                cout << " from RegularQueue" << endl;
-                regular_client.popQueue();
+                if(!regular_client.QueueIsEmpty()) {
+                    cout << "Now serving ";
+                    regular_client.frontQueue();
+                    cout << " from RegularQueue" << endl;
+                    regular_client.popQueue();
+                } else {
+                    cout << "RegularQueue empty" << endl;
+                }
             }
         }
     }
@@ -236,7 +266,7 @@ class CQSimulation {
      *      Using object
      */
 
-    void lineup(const string &string1, const string &string2, const string &string3) {                          // Lineup method
+    void lineup(const string &string1, const string &string2, const string &string3) {                          /// Lineup method
         if(sup_stat.isArrive()) {
             if(string3 == "regular") {
                 regular_client.insertQueue(string2);
@@ -256,7 +286,7 @@ class CQSimulation {
         }
     }
 
-    void supervisor_status(const string &string1, const string &string2) {                                  //  method that checks if the supervisor is arrived
+    void supervisor_status(const string &string1, const string &string2) {                                  ///  method that checks if the supervisor is arrived
         sup_stat.change_stat(string1);
         if(sup_stat.isArrive()) {
             while (!vip_client.isEmpty()) {
@@ -268,12 +298,16 @@ class CQSimulation {
         }
     }
 
-    void serve(const string &string1) {                                                                 //  serving method
+    void serve(const string &string1) {                                                                 ///  serving method
         if(sup_stat.isArrive()) {
-            cout << "Now serving ";
-            regular_client.frontQueue();
-            cout << " from RegularQueue" << endl;
-            regular_client.popQueue();
+            if(!regular_client.QueueIsEmpty()) {
+                cout << "Now serving ";
+                regular_client.frontQueue();
+                cout << " from RegularQueue" << endl;
+                regular_client.popQueue();
+            } else {
+                cout << "RegularQueue empty" << endl;
+            }
         } else {
             if(!vip_client.isEmpty()) {
                 cout << "Now serving ";
@@ -281,10 +315,14 @@ class CQSimulation {
                 cout << " from VIPStack" << endl;
                 vip_client.popStack();
             } else {
-                cout << "Now serving ";
-                regular_client.frontQueue();
-                cout << " from RegularQueue" << endl;
-                regular_client.popQueue();
+                if(!regular_client.QueueIsEmpty()) {
+                    cout << "Now serving ";
+                    regular_client.frontQueue();
+                    cout << " from RegularQueue" << endl;
+                    regular_client.popQueue();
+                } else {
+                    cout << "RegularQueue empty" << endl;
+                }
             }
         }
     }
